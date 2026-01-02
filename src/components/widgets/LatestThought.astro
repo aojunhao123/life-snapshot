@@ -16,24 +16,24 @@ if (!latestThought) {
 const { Content } = await render(latestThought)
 ---
 
-<div class="thought-section">
-  <a href="/thoughts" class="section-header">
+<a href="/thoughts" class="thought-section">
+  <div class="section-header">
     <div class="thought-label">Recent Thought</div>
     <div class="thought-hint">View all →</div>
-  </a>
+  </div>
   <div class="thought-divider"></div>
-  <a href="/thoughts" class="thought-link">
-    <div class="thought-content">
-      <Content />
-    </div>
-    <div class="thought-meta">
-      <FormattedDate date={latestThought.data.pubDate} />
-    </div>
-  </a>
-</div>
+  <div class="thought-content">
+    <Content />
+  </div>
+  <div class="thought-meta">
+    <FormattedDate date={latestThought.data.pubDate} />
+  </div>
+</a>
 
 <style>
   .thought-section {
+    color: var(--text-primary);
+    text-decoration: none;
     margin-bottom: 2rem;
   }
 
@@ -41,7 +41,6 @@ const { Content } = await render(latestThought)
     display: flex;
     justify-content: space-between;
     align-items: center;
-    text-decoration: none;
     margin-bottom: 0.5rem;
   }
 
@@ -88,7 +87,7 @@ const { Content } = await render(latestThought)
     font-size: var(--font-size-m);
     line-height: 1.6;
     color: var(--text-primary);
-    max-height: 4rem;
+    max-height: 8rem;
     overflow-y: auto;
     padding-right: 0.5rem;
     margin-bottom: 0.75rem;
@@ -117,7 +116,7 @@ const { Content } = await render(latestThought)
   .thought-content :global(p) {
     margin: 0;
   }
-  
+
   .thought-content :global(p + p) {
     margin-top: 0.5em;
   }

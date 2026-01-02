@@ -1,17 +1,17 @@
 import type { ThemeConfig } from './types'
 
 export const themeConfig: ThemeConfig = {
-  // SITE INFO ///////////////////////////////////////////////////////////////////////////////////////////
+  // SITE INFO
   site: {
     website: 'https://astro-chiri.netlify.app/', // Site domain
-    title: 'CHIRI', // Site title
+    title: 'Noctis',
     author: 'aojunhao123',
     authorLink: 'https://github.com/aojunhao123',
-    description: 'Minimal blog built by Astro', // Site description
+    description: 'A place for words, written by someone.',
     language: 'zh-CN' // Default language
   },
 
-  // GENERAL SETTINGS ////////////////////////////////////////////////////////////////////////////////////
+  // GENERAL SETTINGS
   general: {
     contentWidth: '35rem', // Content area width
     centeredLayout: true, // Use centered layout (false for left-aligned)
@@ -21,14 +21,14 @@ export const themeConfig: ThemeConfig = {
     fadeAnimation: true // Enable fade animations
   },
 
-  // DATE SETTINGS ///////////////////////////////////////////////////////////////////////////////////////
+  // DATE SETTINGS
   date: {
     dateFormat: 'YYYY-MM-DD', // Date format: YYYY-MM-DD, MM-DD-YYYY, DD-MM-YYYY, MONTH DAY YYYY, DAY MONTH YYYY
     dateSeparator: '.', // Date separator: . - / (except for MONTH DAY YYYY and DAY MONTH YYYY)
     dateOnRight: true // Date position in post list (true for right, false for left)
   },
 
-  // POST SETTINGS ///////////////////////////////////////////////////////////////////////////////////////
+  // POST SETTINGS
   post: {
     readingTime: true, // Show reading time in posts
     toc: true, // Show table of contents (when there is enough page width)

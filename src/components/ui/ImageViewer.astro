@@ -119,13 +119,17 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.15s ease-in-out;
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    transition:
+      opacity 0.3s ease-out,
+      backdrop-filter 0.3s ease-out;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(0px);
     cursor: zoom-out;
   }
 
   .image-viewer.active {
     opacity: 1;
+    backdrop-filter: blur(8px);
   }
 
   .image-viewer img {
@@ -134,11 +138,44 @@
     max-height: 80vh;
     object-fit: contain;
     cursor: zoom-out;
+    opacity: 0;
+    transform: scale(0.95);
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.3s ease-out;
+  }
+
+  .image-viewer.active img {
+    opacity: 1;
+    transform: scale(1);
   }
 
   @media (max-width: 768px) {
     .image-viewer img {
       min-width: 100vw;
+    }
+  }
+
+  /* 不支持 backdrop-filter 的浏览器降级方案 */
+  @supports not (backdrop-filter: blur(8px)) {
+    .image-viewer {
+      background: color-mix(in srgb, var(--bg) 95%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image-viewer,
+    .image-viewer img {
+      transition: none;
+    }
+
+    .image-viewer.active {
+      backdrop-filter: blur(8px);
+    }
+
+    .image-viewer img {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 

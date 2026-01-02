@@ -16,37 +16,38 @@ const thoughtsWithContent = await Promise.all(
 )
 ---
 
-<IndexLayout 
-  title="Thoughts" 
-  description="Random thoughts and ideas"
->
+<IndexLayout title="Thoughts" description="Random thoughts and ideas">
   <div class="thoughts-header">
     <h1 class="main-title">短想法</h1>
     <p class="subtitle">Fleeting Thoughts</p>
   </div>
 
-  {thoughts.length === 0 ? (
-    <div class="empty-state">
-      <p class="empty-message">此处空无一物</p>
-      <p class="empty-submessage">Nothing here yet</p>
-      <a href="/" class="back-link">← 返回首页</a>
-    </div>
-  ) : (
-    <div class="thoughts-list">
-      {thoughtsWithContent.map(({ data, Content }, index) => (
-        <article class="thought-card" style={`animation-delay: ${index * 0.1}s`}>
-          <div class="thought-content">
-            <Content />
-          </div>
-          <div class="card-footer">
-            <time class="thought-date">
-              <FormattedDate date={data.pubDate} />
-            </time>
-          </div>
-        </article>
-      ))}
-    </div>
-  )}
+  {
+    thoughts.length === 0 ? (
+      <div class="empty-state">
+        <p class="empty-message">此处空无一物</p>
+        <p class="empty-submessage">Nothing here yet</p>
+        <a href="/" class="back-link">
+          ← 返回首页
+        </a>
+      </div>
+    ) : (
+      <div class="thoughts-list">
+        {thoughtsWithContent.map(({ data, Content }, index) => (
+          <article class="thought-card" style={`animation-delay: ${index * 0.1}s`}>
+            <div class="thought-content">
+              <Content />
+            </div>
+            <div class="card-footer">
+              <time class="thought-date">
+                <FormattedDate date={data.pubDate} />
+              </time>
+            </div>
+          </article>
+        ))}
+      </div>
+    )
+  }
 </IndexLayout>
 
 <style>
@@ -156,7 +157,7 @@ const thoughtsWithContent = await Promise.all(
   .thought-content :global(p) {
     margin: 0;
   }
-  
+
   .thought-content :global(p + p) {
     margin-top: 0.875em;
   }

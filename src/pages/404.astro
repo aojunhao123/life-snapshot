@@ -4,10 +4,110 @@ import IndexLayout from '@/layouts/IndexLayout.astro'
 ---
 
 <IndexLayout title={`404 - ${themeConfig.site.title}`} description="Not Found">
-  <style>
-    .error-container {
-      color: var(--text-secondary);
-    }
-  </style>
-  <p class="error-container">Page Not Found...</p>
+  <div class="error-page">
+    <div class="error-code">404</div>
+    
+    <p class="error-message">此处空无一物</p>
+    <p class="error-submessage">Nothing here yet</p>
+    
+    <nav class="error-nav">
+      <a href="/">← 返回首页</a>
+      <span class="divider">·</span>
+      <a href="/thoughts">查看想法</a>
+    </nav>
+  </div>
 </IndexLayout>
+
+<style>
+  .error-page {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .error-code {
+    font-family: var(--mono);
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: var(--font-weight-light);
+    color: var(--text-tertiary);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-bottom: 2rem;
+    animation: fade-in 0.8s ease-out;
+  }
+
+  .error-message {
+    font-size: var(--font-size-l);
+    color: var(--text-secondary);
+    margin: 0 0 0.5rem 0;
+    animation: fade-in 1s ease-out 0.2s both;
+  }
+
+  .error-submessage {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--font-size-s);
+    color: var(--text-tertiary);
+    margin: 0 0 3rem 0;
+    animation: fade-in 1s ease-out 0.4s both;
+  }
+
+  .error-nav {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: var(--font-size-s);
+    animation: fade-in 1s ease-out 0.6s both;
+  }
+
+  .error-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease-out;
+  }
+
+  .error-nav a:hover {
+    color: var(--text-primary);
+  }
+
+  .divider {
+    color: var(--text-tertiary);
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .error-code,
+    .error-message,
+    .error-submessage,
+    .error-nav {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .error-page {
+      min-height: 50vh;
+    }
+
+    .error-code {
+      margin-bottom: 1.5rem;
+    }
+
+    .error-submessage {
+      margin-bottom: 2rem;
+    }
+  }
+</style>

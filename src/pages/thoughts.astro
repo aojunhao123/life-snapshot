@@ -1,0 +1,157 @@
+---
+import IndexLayout from '@/layouts/IndexLayout.astro'
+import { getCollection } from 'astro:content'
+import { render } from 'astro:content'
+import FormattedDate from '@/components/widgets/FormattedDate.astro'
+
+const thoughts = (await getCollection('thoughts')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+)
+
+const thoughtsWithContent = await Promise.all(
+  thoughts.map(async (thought) => ({
+    ...thought,
+    Content: (await render(thought)).Content
+  }))
+)
+---
+
+<IndexLayout 
+  title="Thoughts" 
+  description="Random thoughts and ideas"
+>
+  <div class="thoughts-header">
+    <h1>短想法</h1>
+  </div>
+
+  <div class="thoughts-list">
+    {thoughtsWithContent.map(({ data, Content }) => (
+      <article class="thought-item">
+        <div class="thought-date">
+          <FormattedDate date={data.pubDate} />
+        </div>
+        <div class="thought-content">
+          <Content />
+        </div>
+      </article>
+    ))}
+  </div>
+
+  {thoughts.length === 0 && (
+    <div class="empty-state">
+      <p>你似乎来到了一片荒原...</p>
+    </div>
+  )}
+</IndexLayout>
+
+<style>
+  .thoughts-header h1 {
+    font-size: var(--font-size-m);
+    font-weight: var(--font-weight-bold);
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+  }
+
+  .subtitle {
+    margin: 0;
+    font-size: var(--font-size-s);
+    color: var(--text-secondary);
+  }
+
+  .thoughts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .thought-item {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .thought-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .thought-date {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: var(--font-size-s);
+    color: var(--text-tertiary);
+    letter-spacing: var(--spacing-s);
+    padding-top: 0.125rem;
+    min-width: 6rem;
+  }
+
+  .thought-content {
+    flex: 1;
+    font-family: var(--sans);
+    font-size: var(--font-size-m);
+    line-height: 1.75;
+    color: var(--text-primary);
+  }
+
+  /* 确保 markdown 内容样式合适 */
+  .thought-content :global(p) {
+    margin: 0;
+  }
+  
+  .thought-content :global(p + p) {
+    margin-top: 0.75em;
+  }
+
+  .thought-content :global(a) {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.2s ease-out;
+  }
+
+  .thought-content :global(a:hover) {
+    text-decoration-color: var(--text-secondary);
+  }
+
+  .thought-content :global(strong) {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .thought-content :global(em) {
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  .thought-content :global(code) {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    background-color: var(--code-bg);
+    padding: 0.125em 0.375em;
+    border-radius: 3px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--text-tertiary);
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: var(--font-size-m);
+  }
+
+  @media (max-width: 768px) {
+    .thought-item {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .thought-date {
+      min-width: auto;
+      padding-top: 0;
+    }
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content'
+import { render } from 'astro:content'
+import FormattedDate from '../widgets/FormattedDate.astro'
+
+const thoughts = await getCollection('thoughts')
+// Get the latest thought
+const latestThought = thoughts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+)[0]
+
+if (!latestThought) {
+  return null
+}
+
+const { Content } = await render(latestThought)
+---
+
+<a href="/thoughts" class="thought-container">
+  <div class="thought-header">
+    <div class="thought-label">Recent Thought</div>
+    <div class="thought-hint">View all →</div>
+  </div>
+  <div class="thought-content">
+    <Content />
+  </div>
+  <div class="thought-meta">
+    <FormattedDate date={latestThought.data.pubDate} />
+  </div>
+</a>
+
+<style>
+  .thought-container {
+    display: block;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: var(--code-bg);
+    border-radius: 12px;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .thought-container:hover {
+    border-color: var(--text-tertiary);
+  }
+
+  .thought-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .thought-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .thought-hint {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .thought-container:hover .thought-hint {
+    opacity: 1;
+  }
+
+  @media (hover: none) or (pointer: coarse) {
+    .thought-hint {
+      opacity: 1;
+    }
+  }
+
+  .thought-content {
+    font-family: var(--sans);
+    font-size: var(--font-size-m);
+    line-height: 1.6;
+    color: var(--text-primary);
+    max-height: 4rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .thought-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .thought-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thought-content::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 3px;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .thought-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-tertiary);
+  }
+
+  /* Make sure markdown content inside doesn't have huge margins */
+  .thought-content :global(p) {
+    margin: 0;
+  }
+  
+  .thought-content :global(p + p) {
+    margin-top: 0.5em;
+  }
+
+  .thought-meta {
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    text-align: right;
+  }
+</style>

@@ -21,4 +21,12 @@ const about = defineCollection({
   schema: z.object({})
 })
 
-export const collections = { posts, about }
+const thoughts = defineCollection({
+  // Load Markdown files in the `src/content/thoughts/` directory.
+  loader: glob({ base: './src/content/thoughts', pattern: '**/*.md' }),
+  schema: z.object({
+    pubDate: z.coerce.date(),
+  })
+})
+
+export const collections = { posts, about, thoughts }

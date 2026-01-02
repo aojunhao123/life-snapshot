@@ -21,86 +21,144 @@ const thoughtsWithContent = await Promise.all(
   description="Random thoughts and ideas"
 >
   <div class="thoughts-header">
-    <h1>短想法</h1>
+    <h1 class="main-title">短想法</h1>
+    <p class="subtitle">Fleeting Thoughts</p>
   </div>
 
-  <div class="thoughts-list">
-    {thoughtsWithContent.map(({ data, Content }) => (
-      <article class="thought-item">
-        <div class="thought-date">
-          <FormattedDate date={data.pubDate} />
-        </div>
-        <div class="thought-content">
-          <Content />
-        </div>
-      </article>
-    ))}
-  </div>
-
-  {thoughts.length === 0 && (
+  {thoughts.length === 0 ? (
     <div class="empty-state">
-      <p>你似乎来到了一片荒原...</p>
+      <p class="empty-message">此处空无一物</p>
+      <p class="empty-submessage">Nothing here yet</p>
+      <a href="/" class="back-link">← 返回首页</a>
+    </div>
+  ) : (
+    <div class="thoughts-list">
+      {thoughtsWithContent.map(({ data, Content }, index) => (
+        <article class="thought-card" style={`animation-delay: ${index * 0.1}s`}>
+          <div class="thought-content">
+            <Content />
+          </div>
+          <div class="card-footer">
+            <time class="thought-date">
+              <FormattedDate date={data.pubDate} />
+            </time>
+          </div>
+        </article>
+      ))}
     </div>
   )}
 </IndexLayout>
 
 <style>
-  .thoughts-header h1 {
-    font-size: var(--font-size-m);
+  .thoughts-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-top: 2rem;
+  }
+
+  .main-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
     font-weight: var(--font-weight-bold);
-    margin: 0.5rem 0;
+    margin: 0 0 0.5rem 0;
     color: var(--text-primary);
+    animation: fade-in 0.8s ease-out;
   }
 
   .subtitle {
-    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
     font-size: var(--font-size-s);
     color: var(--text-secondary);
+    margin: 0;
+    animation: fade-in 1s ease-out 0.2s both;
   }
 
+  .empty-state {
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .empty-message {
+    font-size: var(--font-size-l);
+    color: var(--text-secondary);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .empty-submessage {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--font-size-s);
+    color: var(--text-tertiary);
+    margin: 0 0 2rem 0;
+  }
+
+  .back-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-s);
+    transition: color 0.2s ease-out;
+  }
+
+  .back-link:hover {
+    color: var(--text-primary);
+  }
+
+  /* 卡片列表 */
   .thoughts-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    max-width: 42rem;
+    margin: 0 auto;
   }
 
-  .thought-item {
+  /* 单个卡片 */
+  .thought-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease-out;
+    animation: slide-in 0.6s ease-out both;
+  }
+
+  .thought-card:hover {
+    border-color: var(--text-tertiary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-footer {
+    margin-top: 1rem;
     display: flex;
-    gap: 1rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .thought-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+    justify-content: flex-end;
   }
 
   .thought-date {
-    flex-shrink: 0;
     font-family: var(--mono);
-    font-size: var(--font-size-s);
+    font-size: var(--font-size-xs);
     color: var(--text-tertiary);
     letter-spacing: var(--spacing-s);
-    padding-top: 0.125rem;
-    min-width: 6rem;
   }
 
+  /* 内容区域 */
   .thought-content {
-    flex: 1;
     font-family: var(--sans);
     font-size: var(--font-size-m);
     line-height: 1.75;
     color: var(--text-primary);
   }
 
-  /* 确保 markdown 内容样式合适 */
   .thought-content :global(p) {
     margin: 0;
   }
   
   .thought-content :global(p + p) {
-    margin-top: 0.75em;
+    margin-top: 0.875em;
   }
 
   .thought-content :global(a) {
@@ -132,26 +190,60 @@ const thoughtsWithContent = await Promise.all(
     border-radius: 3px;
   }
 
-  .empty-state {
-    text-align: center;
-    padding: 4rem 0;
-    color: var(--text-tertiary);
+  /* 动画 */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .empty-state p {
-    margin: 0;
-    font-size: var(--font-size-m);
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  @media (max-width: 768px) {
-    .thought-item {
-      flex-direction: column;
-      gap: 0.5rem;
+  /* 尊重用户偏好 */
+  @media (prefers-reduced-motion: reduce) {
+    .main-title,
+    .subtitle,
+    .thought-card {
+      animation: none;
     }
 
-    .thought-date {
-      min-width: auto;
-      padding-top: 0;
+    .thought-card:hover {
+      transform: none;
+    }
+  }
+
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .thoughts-header {
+      margin-bottom: 2.5rem;
+      padding-top: 1rem;
+    }
+
+    .thoughts-list {
+      gap: 1.25rem;
+    }
+
+    .thought-card {
+      padding: 1.25rem;
+    }
+
+    .thought-card:hover {
+      transform: none;
+      box-shadow: none;
     }
   }
 </style>

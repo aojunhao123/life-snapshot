@@ -12,6 +12,7 @@
   --serif: 'LXGW WenKai Screen', Besley, Baskerville, Georgia, Cambria, 'Times New Roman', Times, serif;
   --mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
+  --font-size-xs: 0.75rem;
   --font-size-s: 0.8125rem;
   --font-size-m: 0.9375rem;
   --font-size-l: 1.0625rem;

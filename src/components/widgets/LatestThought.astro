@@ -16,41 +16,33 @@ if (!latestThought) {
 const { Content } = await render(latestThought)
 ---
 
-<a href="/thoughts" class="thought-container">
-  <div class="thought-header">
+<div class="thought-section">
+  <a href="/thoughts" class="section-header">
     <div class="thought-label">Recent Thought</div>
     <div class="thought-hint">View all →</div>
-  </div>
-  <div class="thought-content">
-    <Content />
-  </div>
-  <div class="thought-meta">
-    <FormattedDate date={latestThought.data.pubDate} />
-  </div>
-</a>
+  </a>
+  <div class="thought-divider"></div>
+  <a href="/thoughts" class="thought-link">
+    <div class="thought-content">
+      <Content />
+    </div>
+    <div class="thought-meta">
+      <FormattedDate date={latestThought.data.pubDate} />
+    </div>
+  </a>
+</div>
 
 <style>
-  .thought-container {
-    display: block;
-    text-decoration: none;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background-color: var(--code-bg);
-    border-radius: 12px;
-    position: relative;
-    border: 1px solid var(--border);
-    transition: all 0.2s ease-in-out;
+  .thought-section {
+    margin-bottom: 2rem;
   }
 
-  .thought-container:hover {
-    border-color: var(--text-tertiary);
-  }
-
-  .thought-header {
+  .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    text-decoration: none;
+    margin-bottom: 0.5rem;
   }
 
   .thought-label {
@@ -69,7 +61,7 @@ const { Content } = await render(latestThought)
     transition: opacity 0.2s ease-out;
   }
 
-  .thought-container:hover .thought-hint {
+  .thought-section:hover .thought-hint {
     opacity: 1;
   }
 
@@ -77,6 +69,18 @@ const { Content } = await render(latestThought)
     .thought-hint {
       opacity: 1;
     }
+  }
+
+  .thought-divider {
+    height: 1px;
+    background-color: var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .thought-link {
+    display: block;
+    text-decoration: none;
+    transition: opacity 0.2s ease-out;
   }
 
   .thought-content {
@@ -87,6 +91,7 @@ const { Content } = await render(latestThought)
     max-height: 4rem;
     overflow-y: auto;
     padding-right: 0.5rem;
+    margin-bottom: 0.75rem;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
@@ -109,7 +114,6 @@ const { Content } = await render(latestThought)
     background-color: var(--text-tertiary);
   }
 
-  /* Make sure markdown content inside doesn't have huge margins */
   .thought-content :global(p) {
     margin: 0;
   }
@@ -119,9 +123,10 @@ const { Content } = await render(latestThought)
   }
 
   .thought-meta {
-    margin-top: 0.75rem;
-    font-size: 0.8125rem;
+    font-family: var(--mono);
+    font-size: var(--font-size-xs);
     color: var(--text-tertiary);
     text-align: right;
+    letter-spacing: var(--spacing-s);
   }
 </style>

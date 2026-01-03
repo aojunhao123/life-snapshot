@@ -1,6 +1,7 @@
 ---
 import { themeConfig } from '@/config'
 import ThemeToggle from '@/components/ui/ThemeToggle.astro'
+import RSSSubscribe from '@/components/ui/RSSSubscribe.astro'
 ---
 
 <header>
@@ -9,9 +10,13 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro'
       <a href="/" class="site-title">{themeConfig.site.title}</a>
       <p class="site-slogan">{themeConfig.site.description}</p>
     </div>
-    <ThemeToggle />
+    <div class="nav-actions">
+      <RSSSubscribe />
+      <ThemeToggle />
+    </div>
   </nav>
 </header>
+
 <style>
   header {
     margin: 0;
@@ -45,5 +50,11 @@ import ThemeToggle from '@/components/ui/ThemeToggle.astro'
     color: var(--text-secondary);
     margin: 0;
     line-height: 1.5;
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 </style>

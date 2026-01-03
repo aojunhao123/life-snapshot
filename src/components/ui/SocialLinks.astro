@@ -3,10 +3,11 @@ interface Props {
   github?: string
   twitter?: string
   email?: string
+  rss?: boolean
   class?: string
 }
 
-const { github, twitter, email, class: className } = Astro.props
+const { github, twitter, email, rss, class: className } = Astro.props
 ---
 
 <div class={`social-links ${className || ''}`}>
@@ -58,6 +59,27 @@ const { github, twitter, email, class: className } = Astro.props
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
         </svg>
         <span>Email</span>
+      </a>
+    )
+  }
+
+  {
+    rss && (
+      <a href="/rss.xml" target="_blank" aria-label="RSS Feed">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon"
+        >
+          <path d="M4 11a9 9 0 0 1 9 9" />
+          <path d="M4 4a16 16 0 0 1 16 16" />
+          <circle cx="5" cy="19" r="1" />
+        </svg>
+        <span>RSS</span>
       </a>
     )
   }

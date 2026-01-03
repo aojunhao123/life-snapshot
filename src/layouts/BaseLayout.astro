@@ -5,6 +5,7 @@ import ThemeManager from '@/components/ui/ThemeManager.astro'
 import FaviconThemeSwitcher from '@/components/ui/FaviconThemeSwitcher.astro'
 import TransitionWrapper from '@/components/layout/TransitionWrapper.astro'
 import type { LayoutProps } from '@/types'
+import Analytics from '@vercel/analytics/astro'
 
 type Props = LayoutProps
 
@@ -43,6 +44,7 @@ const finalWidth = shouldUseCustomWidth ? `${widthValue}rem` : '25rem'
         </div>
       )
     }
+    <Analytics />
   </body>
 </html>
 

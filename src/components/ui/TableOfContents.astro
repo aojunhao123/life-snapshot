@@ -8,24 +8,30 @@ const { toc = [] }: TOCProps = Astro.props
 <div class="toc-container" id="toc">
   <nav class="toc-nav">
     <ul class="toc-list" id="toc-list">
-      <!-- Back to top link -->
-      <li class="toc-item toc-level-0">
-        <a href="#" class="toc-link toc-title" title="Back to top" data-text="Back to top">
-          Back to top
-        </a>
-      </li>
-
-      <!-- TOC items -->
       {
         toc.map((item) => (
           <li class={`toc-item toc-level-${item.level}`}>
-            <a href={`#${item.id}`} class="toc-link" title={item.text} data-text={item.text}>
+            <a href={`#${item.id}`} class="toc-link" title={item.text}>
               {item.text}
             </a>
           </li>
         ))
       }
     </ul>
+    <a href="#" class="back-to-top" title="返回顶部" aria-label="返回顶部">
+      <span class="back-to-top-text">顶部</span>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="back-to-top-icon"
+      >
+        <path d="M18 15l-6-6-6 6"></path>
+      </svg>
+    </a>
   </nav>
 </div>
 
@@ -43,7 +49,6 @@ const { toc = [] }: TOCProps = Astro.props
       container: null,
       links: null,
       headings: null,
-      titleLink: null,
       headingMap: new Map(),
       positions: [],
       scrollTimeout: null,
@@ -57,7 +62,6 @@ const { toc = [] }: TOCProps = Astro.props
 
       state.links = document.querySelectorAll('.toc-link')
       state.headings = document.querySelectorAll('h1, h2, h3')
-      state.titleLink = document.querySelector('.toc-link.toc-title')
 
       // Build heading map
       state.headingMap.clear()
@@ -75,10 +79,7 @@ const { toc = [] }: TOCProps = Astro.props
     function checkContent() {
       if (!state.container || !state.links) return
 
-      const tocItems = Array.from(state.links).filter(
-        (link) => !link.classList.contains('toc-title')
-      )
-      state.hasContent = tocItems.length > 0
+      state.hasContent = state.links.length > 0
 
       if (!state.hasContent) {
         state.container.style.display = 'none'
@@ -126,24 +127,27 @@ const { toc = [] }: TOCProps = Astro.props
     // Handle click events
     function handleClick(e) {
       const link = e.target.closest('.toc-link')
+      const backToTop = e.target.closest('.back-to-top')
+
+      if (backToTop) {
+        e.preventDefault()
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        history.pushState(null, null, ' ')
+        return
+      }
+
       if (!link) return
 
       e.preventDefault()
-
-      if (link.classList.contains('toc-title')) {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        history.pushState(null, null, '#')
-      } else {
-        const href = link.getAttribute('href')
-        if (href?.startsWith('#')) {
-          const target = document.getElementById(href.substring(1))
-          if (target) {
-            const rect = target.getBoundingClientRect()
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-            const offset = rect.top + scrollTop - 96
-            window.scrollTo({ top: offset, behavior: 'smooth' })
-            history.pushState(null, null, href)
-          }
+      const href = link.getAttribute('href')
+      if (href?.startsWith('#')) {
+        const target = document.getElementById(href.substring(1))
+        if (target) {
+          const rect = target.getBoundingClientRect()
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+          const offset = rect.top + scrollTop - 96
+          window.scrollTo({ top: offset, behavior: 'smooth' })
+          history.pushState(null, null, href)
         }
       }
     }
@@ -168,8 +172,6 @@ const { toc = [] }: TOCProps = Astro.props
 
       if (currentActive && state.headingMap.has(currentActive)) {
         state.headingMap.get(currentActive).classList.add('active')
-      } else if (state.titleLink) {
-        state.titleLink.classList.add('active')
       }
     }
 
@@ -217,7 +219,6 @@ const { toc = [] }: TOCProps = Astro.props
         container: null,
         links: null,
         headings: null,
-        titleLink: null,
         headingMap: new Map(),
         positions: [],
         hasContent: false
@@ -251,7 +252,6 @@ const { toc = [] }: TOCProps = Astro.props
   .toc-container {
     width: 12rem;
     position: relative;
-    left: -0.175em;
     opacity: 0;
     transition: opacity 0.2s ease-out;
     display: none;
@@ -269,6 +269,9 @@ const { toc = [] }: TOCProps = Astro.props
 
   .toc-nav {
     font-family: var(--sans);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .toc-list,
@@ -296,91 +299,69 @@ const { toc = [] }: TOCProps = Astro.props
 
   .toc-link {
     display: block;
-    color: transparent;
+    font-size: var(--font-size-s);
+    line-height: 1.6;
+    color: var(--text-tertiary);
     text-decoration: none;
-    position: relative;
-    padding-left: 0;
-    height: 1.125rem;
-    width: 100%;
-    min-height: 1rem;
-    font-size: 0;
-    line-height: 1.125rem;
-    text-indent: 2rem;
-    overflow: hidden;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
-    transition:
-      color 0.2s ease-out,
-      font-size 0.2s ease-out,
-      text-indent 0.2s ease-out;
+    transition: color 0.15s ease-out;
+    cursor: pointer;
+    padding: 0.125rem 0;
+  }
+
+  .toc-link:hover {
+    color: var(--text-primary);
+  }
+
+  /* Active 状态 */
+  .toc-link.active {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* 层级缩进 */
+  .toc-level-2 .toc-link {
+    padding-left: 0.75rem;
+  }
+
+  .toc-level-3 .toc-link {
+    padding-left: 1.5rem;
+  }
+
+  /* Back to top 按钮 */
+  .back-to-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: var(--font-size-xs);
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    transition: color 0.15s ease-out;
     cursor: pointer;
   }
 
-  .toc-link::after {
-    content: attr(data-text);
-    position: absolute;
-    left: -0.5rem;
-    top: 0;
+  .back-to-top:hover {
+    color: var(--text-primary);
+  }
+
+  .back-to-top-text {
     font-family: var(--sans);
-    font-size: var(--font-size-s);
-    letter-spacing: var(--spacing-m);
-    line-height: 1.125rem;
-    color: var(--text-primary);
-    opacity: 0;
-    transition:
-      opacity 0.2s ease-out,
-      left 0.2s ease-out;
-    pointer-events: none;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 100%;
+    letter-spacing: 0.05em;
   }
 
-  .toc-link:hover::after {
-    opacity: 1;
-    left: -0.75rem;
-  }
-
-  .toc-level-0 .toc-link:hover::after {
-    opacity: 0;
-  }
-
-  .toc-level-1 .toc-link:hover::before,
-  .toc-level-2 .toc-link:hover::before,
-  .toc-level-3 .toc-link:hover::before {
+  .back-to-top-icon {
     width: 0.75rem;
-    transition: width 0.1s ease-out;
+    height: 0.75rem;
   }
 
-  .toc-link.active {
-    color: var(--text-primary);
-  }
-
-  /* Horizontal line indicators */
-  .toc-level-0 .toc-link::before,
-  .toc-level-1 .toc-link::before,
-  .toc-level-2 .toc-link::before,
-  .toc-level-3 .toc-link::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 2.5rem;
-    height: 1px;
-    background-color: var(--text-tertiary);
-    transform: translateY(-50%);
-    opacity: 0.4;
-    transition: all 0.1s ease-out;
-  }
-
-  .toc-link:hover::before,
-  .toc-link.active::before {
-    opacity: 0.8;
-    background-color: var(--text-primary);
-  }
-
-  /* Hide on mobile */
+  /* 移动端隐藏 */
   @media (max-width: 768px) {
     .toc-container {
       display: none !important;

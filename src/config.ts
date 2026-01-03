@@ -3,7 +3,7 @@ import type { ThemeConfig } from './types'
 export const themeConfig: ThemeConfig = {
   // SITE INFO
   site: {
-    website: 'https://astro-chiri.netlify.app/', // Site domain
+    website: 'https://life-snapshot.vercel.app/', // Site domain
     title: 'Noctis',
     author: 'aojunhao123',
     authorLink: 'https://github.com/aojunhao123',
